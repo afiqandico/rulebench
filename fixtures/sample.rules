@@ -1,0 +1,10 @@
+# Example ruleset used by the demo and integration tests.
+# Two enabled rules that will fire, one enabled rule that is dead,
+# a duplicate SID, a disabled rule, and a malformed line.
+
+alert tcp any any -> any any (msg:"ET POLICY Possible External RDP Brute Force"; flow:established,to_server; content:"|03 00 00|"; depth:3; classtype:attempted-admin; sid:2010935; rev:3;)
+alert dns any any -> any any (msg:"ET DNS Query to a .top domain"; dns_query; content:".top"; nocase; classtype:potentially-bad-traffic; sid:2027757; rev:2;)
+alert http any any -> any any (msg:"ET SCAN Nikto Scan Detected"; flow:established,to_server; content:"Nikto"; http_user_agent; classtype:web-application-attack; sid:2024362; rev:1;)
+alert udp any any -> any 53 (msg:"VERY old duplicate"; content:"|00 01|"; classtype:misc-activity; sid:2010935; rev:1;)
+# alert tcp any any -> any any (msg:"Disabled by upstream, noisy"; content:"X"; classtype:misc-activity; sid:2400001; rev:9;)
+alert tcp any any -> any any msg without parens sid:9999;

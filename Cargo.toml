@@ -1,0 +1,25 @@
+[package]
+name = "rulebench"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.85"
+description = "Suricata rule validator and alert-coverage analyzer"
+license = "MIT"
+repository = "https://github.com/afiqandico/rulebench"
+readme = "README.md"
+keywords = ["suricata", "ids", "soc", "security", "rules"]
+categories = ["command-line-utilities"]
+
+[dependencies]
+clap = { version = "4", features = ["derive"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+[[bin]]
+name = "rulebench"
+path = "src/main.rs"
+
+[profile.release]
+lto = true
+codegen-units = 1
+strip = true
