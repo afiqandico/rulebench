@@ -1,0 +1,15 @@
+cff-version: 1.2.0
+message: "If you use this work, please cite it as below."
+title: "rulebench: Suricata rule validator and alert-coverage analyzer"
+type: software
+authors:
+  - family-names: Pangimpian
+    given-names: Afiq Andico
+    email: afiqandico13@gmail.com
+repository-code: https://github.com/afiqandico/rulebench
+license: MIT
+version: "0.1.0"
+date-released: 2026-11-08
+abstract: >-
+  Two questions an analyst actually asks about a rule set: does it parse, and what does it
+  miss on a given pcap.
