@@ -57,8 +57,9 @@ impl CoverageReport {
     }
 }
 
-/// `top` limits the noisy/unknown lists; the dead list is complete
-/// (callers trim it for display).
+/// `top` caps the `noisy` and `unknown` lists, so a JSON consumer and the text
+/// renderer show the same thing; the `dead` list is always complete (renderers
+/// trim it for display).
 pub fn analyze(rules: &RuleSet, eve: &EveStats, top: usize) -> CoverageReport {
     let mut all_sids: BTreeSet<u64> = BTreeSet::new();
     for r in &rules.rules {
@@ -108,6 +109,7 @@ pub fn analyze(rules: &RuleSet, eve: &EveStats, top: usize) -> CoverageReport {
         })
         .collect();
     unknown.sort_by(|a, b| b.count.cmp(&a.count).then(a.sid.cmp(&b.sid)));
+    let unknown: Vec<UnknownSid> = unknown.into_iter().take(top).collect();
 
     CoverageReport {
         rules_total: rules.rules.len(),
