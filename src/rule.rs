@@ -351,6 +351,7 @@ pub fn find_sid_loose(opts: &str) -> Option<u64> {
         let boundary_ok = at == 0 || matches!(bytes[at - 1], b';' | b' ' | b'\t' | b'(');
         if boundary_ok {
             let digits: String = opts[at + 4..]
+                .trim_start() // `sid: 123` boleh: jalur longgar harus toleran
                 .chars()
                 .take_while(|c| c.is_ascii_digit())
                 .collect();
