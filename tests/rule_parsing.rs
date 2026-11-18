@@ -7,7 +7,7 @@
 //! splitting, loose SID recovery) plus the exact rejection reasons.
 
 use rulebench::rule::{
-    find_sid_loose, parse_line, split_options, unquote, Action, ParseOutcome, Rule, ACTIONS,
+    ACTIONS, Action, ParseOutcome, Rule, find_sid_loose, parse_line, split_options, unquote,
 };
 
 const SRC: &str = "unit-test.rules";
@@ -36,7 +36,10 @@ fn action_roundtrip_is_exact_and_case_sensitive() {
         assert_eq!(parsed.as_str(), name, "roundtrip untuk '{name}'");
         assert_eq!(parsed.to_string(), name);
     }
-    assert!(Action::parse("Alert").is_none(), "parse bersifat case-sensitive");
+    assert!(
+        Action::parse("Alert").is_none(),
+        "parse bersifat case-sensitive"
+    );
     assert!(Action::parse("dropz").is_none());
     assert!(Action::parse("").is_none());
 }
@@ -62,14 +65,24 @@ fn valid_rule_fills_every_header_field() {
 #[test]
 fn commented_rule_is_kept_marked_disabled() {
     let r = as_rule(&format!("#{REAL_RULE}"));
-    assert!(r.disabled, "baris '#' berisi rule = rule nonaktif, bukan komentar biasa");
+    assert!(
+        r.disabled,
+        "baris '#' berisi rule = rule nonaktif, bukan komentar biasa"
+    );
     assert_eq!(r.sid, 2_000_001);
     assert!(r.raw.starts_with('#'));
 }
 
 #[test]
 fn blank_and_plain_comment_lines_are_skipped() {
-    for line in ["", "   ", "\t", "# catatan biasa tanpa rule", "#  ", "#alert-note"] {
+    for line in [
+        "",
+        "   ",
+        "\t",
+        "# catatan biasa tanpa rule",
+        "#  ",
+        "#alert-note",
+    ] {
         assert!(
             matches!(parse_line(line, 1, SRC), ParseOutcome::Skipped),
             "baris {line:?} seharusnya Skipped"
@@ -94,7 +107,10 @@ fn wrong_header_width_is_rejected_and_reports_count() {
 fn non_numeric_sid_is_rejected() {
     let reason = as_invalid("alert tcp any any -> any 80 (sid:abc;)");
     assert!(reason.contains("non-numeric sid"), "alasan: {reason}");
-    assert!(reason.contains("abc"), "alasan harus menyebut nilainya: {reason}");
+    assert!(
+        reason.contains("abc"),
+        "alasan harus menyebut nilainya: {reason}"
+    );
 }
 
 #[test]
@@ -102,7 +118,10 @@ fn split_options_ignores_semicolons_inside_quotes() {
     let opts = r#"msg:"a;b:c"; content:"|3b|"; sid:42;"#;
     let parts = split_options(opts);
     assert_eq!(parts.len(), 3, "dapat {parts:?}");
-    assert!(parts[0].contains("a;b:c"), "semicolon dalam kutip tidak boleh memecah: {parts:?}");
+    assert!(
+        parts[0].contains("a;b:c"),
+        "semicolon dalam kutip tidak boleh memecah: {parts:?}"
+    );
     assert_eq!(parts[2].trim(), "sid:42");
 }
 

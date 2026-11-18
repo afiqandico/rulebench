@@ -55,7 +55,11 @@ fn check_json_counts_are_internally_consistent() {
     let total = v["rules_total"].as_u64().unwrap();
     let enabled = v["rules_enabled"].as_u64().unwrap();
     let disabled = v["rules_disabled"].as_u64().unwrap();
-    assert_eq!(total, enabled + disabled, "enabled + disabled must equal total");
+    assert_eq!(
+        total,
+        enabled + disabled,
+        "enabled + disabled must equal total"
+    );
     assert_eq!(
         v["duplicate_sid_count"].as_u64().unwrap() as usize,
         v["duplicate_sids"].as_array().unwrap().len(),
@@ -119,7 +123,11 @@ fn coverage_json_ratio_matches_its_own_lists() {
 fn coverage_text_reports_the_same_dead_ratio() {
     let (_, rep) = load();
     let text = coverage_text(&rep, 10);
-    let expected = format!("{} ({:.2}% of enabled)", rep.dead.len(), rep.dead_ratio() * 100.0);
+    let expected = format!(
+        "{} ({:.2}% of enabled)",
+        rep.dead.len(),
+        rep.dead_ratio() * 100.0
+    );
     assert!(text.contains(&expected), "text rendering drifted:\n{text}");
     assert!(text.contains(&format!("{} / {}", rep.events_total, rep.alerts_total)));
 }
@@ -135,7 +143,10 @@ fn both_markdown_renderings_start_with_a_heading_and_a_table() {
             lines.next().unwrap_or("").starts_with("# rulebench "),
             "{name} markdown must start with a level-1 heading"
         );
-        assert!(md.contains("| metric | value |"), "{name} markdown lost its metric table");
+        assert!(
+            md.contains("| metric | value |"),
+            "{name} markdown lost its metric table"
+        );
         assert!(
             md.lines().filter(|l| l.starts_with("| ")).count() >= 3,
             "{name} markdown table has fewer rows than expected"
@@ -150,12 +161,22 @@ fn top_zero_empties_the_capped_lists_but_keeps_the_totals() {
     let capped = analyze(&set, &eve, 0);
     let full = analyze(&set, &eve, 10);
 
-    assert!(capped.noisy.is_empty(), "top=0 must not list firing signatures");
-    assert!(capped.unknown.is_empty(), "top=0 must not list unknown SIDs");
+    assert!(
+        capped.noisy.is_empty(),
+        "top=0 must not list firing signatures"
+    );
+    assert!(
+        capped.unknown.is_empty(),
+        "top=0 must not list unknown SIDs"
+    );
     // The counts are independent of `top`; only the lists are capped.
     assert_eq!(capped.firing_sids, full.firing_sids);
     assert_eq!(capped.matched_rules, full.matched_rules);
-    assert_eq!(capped.dead.len(), full.dead.len(), "the dead list is never capped");
+    assert_eq!(
+        capped.dead.len(),
+        full.dead.len(),
+        "the dead list is never capped"
+    );
 }
 
 #[test]
